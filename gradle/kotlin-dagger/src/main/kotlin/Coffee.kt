@@ -41,15 +41,15 @@ class Thermosiphon
 }
 
 @Module
-abstract class PumpModule {
+interface PumpModule {
     @Binds
-    abstract fun providePump(pump: Thermosiphon): Pump
-}
+    fun providePump(pump: Thermosiphon): Pump
 
-@Module(includes = arrayOf(PumpModule::class))
-class DripCoffeeModule {
-    @Provides @Singleton
-    fun provideHeater(): Heater = ElectricHeater()
+    @Module
+    companion object {
+        @Provides @Singleton @JvmStatic
+        fun provideHeater(): Heater = ElectricHeater()
+    }
 }
 
 class CoffeeMaker
@@ -66,7 +66,7 @@ class CoffeeMaker
 }
 
 @Singleton
-@Component(modules = arrayOf(DripCoffeeModule::class))
+@Component(modules = arrayOf(PumpModule::class))
 interface CoffeeShop {
     fun maker(): CoffeeMaker
 }
